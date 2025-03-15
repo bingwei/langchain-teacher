@@ -1,0 +1,10 @@
+.env
+*.pyc
+__pycache__
+
+.idea/
+.python-version
+logs/
+
+ui/.streamlit/*.toml
+faiss_index/
