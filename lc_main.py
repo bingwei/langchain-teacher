@@ -9,6 +9,7 @@ from langchain.chains import LLMChain
 from get_prompt import load_prompt, load_prompt_with_questions
 from user_progress import save_progress, load_progress
 import os
+from loguru import logger
 
 st.set_page_config(page_title="LangChain: Getting Started Class", page_icon="🦜")
 st.title("🦜 LangChain: Getting Started Class")
@@ -71,19 +72,13 @@ lesson_info = lesson_guides[lesson_selection]
 docs_dir = "/Users/aiden/wrk/python/langchain/docs/docs"
 persist_path = "./faiss_index"
 # 尝试加载本地存储
-db = load_faiss(persist_path)
+db = load_faiss(persist_path, docs_dir)
 
-# 检查版本是否需要更新
-version_file = os.path.join(persist_path, "version.txt")
-current_version = str(os.path.getmtime(docs_dir))
-
-if db is None or (os.path.exists(version_file) 
-                and open(version_file).read() != current_version):
-    db = batch_import_guides(docs_dir, persist_path)
 
 lesson_description = lesson_info["description"]
+logger.warning(f'faiss加载完成，lesson_description: {lesson_description}')
 lesson_content = db.similarity_search(lesson_description, k=1)[0].page_content
-
+logger.warning(f'faiss similarity_search结果: {lesson_content}')
 
 # Radio buttons for lesson type selection
 lesson_type = st.sidebar.radio("Select Lesson Type", ["Instructions based lesson", "Interactive lesson with questions"])
